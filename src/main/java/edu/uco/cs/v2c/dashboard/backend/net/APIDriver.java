@@ -37,10 +37,14 @@ import static spark.Spark.stop;
 
 import org.json.JSONObject;
 
-import edu.uco.cs.v2c.dashboard.backend.V2CDashboardBackend;
-import edu.uco.cs.v2c.dashboard.backend.net.restful.DemoEndpoint;
+import edu.uco.cs.v2c.dashboard.backend.log.Logger;
+import edu.uco.cs.v2c.dashboard.backend.net.auth.AuthTokenManager;
+import edu.uco.cs.v2c.dashboard.backend.net.restful.CreateUserEndpoint;
 import edu.uco.cs.v2c.dashboard.backend.net.restful.Endpoint;
+import edu.uco.cs.v2c.dashboard.backend.net.restful.GetConfigEndpoint;
 import edu.uco.cs.v2c.dashboard.backend.net.restful.HTTPMethod;
+import edu.uco.cs.v2c.dashboard.backend.net.restful.ModifyUserEndpoint;
+import edu.uco.cs.v2c.dashboard.backend.net.restful.SetConfigEndpoint;
 
 /**
  * API Driver; manages RESTful and WebSocket API endpoints.
@@ -70,7 +74,10 @@ public class APIDriver implements Runnable {
     this.port = port;
     
     endpoints = new Endpoint[] {
-        new DemoEndpoint(),
+        new CreateUserEndpoint(),
+        new GetConfigEndpoint(),
+        new ModifyUserEndpoint(),
+        new SetConfigEndpoint()
     };
     
     staticFiles.location(RESPONDER_STATIC_FOLDER); // relative to the root of the classpath
@@ -80,7 +87,7 @@ public class APIDriver implements Runnable {
    * Runs the front end in a separate thread so that it can be halted externally.
    */
   @Override public void run() {
-    V2CDashboardBackend.getLogger().logInfo(LOG_LABEL, "Exposing API on port " + port);
+    Logger.onInfo(LOG_LABEL, "Exposing API on port " + port);
     port(port);
     
     before((req, res) -> {
@@ -92,8 +99,10 @@ public class APIDriver implements Runnable {
             + "Access-Control-Allow-Origin, "
             + "Access-Control-Allow-Methods, "
             + "Authorization, "
-            + "X-Requested-With");
-      res.header("Access-Control-Expose-Headers", "Content-Type, Content-Length");
+            + "X-Requested-With, "
+            + AuthTokenManager.INCOMING_SESSION_HEADER);
+      res.header("Access-Control-Expose-Headers",
+          String.format("Content-Type, Content-Length, %1$s", AuthTokenManager.OUTGOING_SESSION_HEADER));
       res.header("Content-Type", "application/json"); 
     });
     
