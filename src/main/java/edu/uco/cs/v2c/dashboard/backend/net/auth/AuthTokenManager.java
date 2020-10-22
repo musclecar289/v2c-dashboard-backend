@@ -63,6 +63,11 @@ public class AuthTokenManager {
    */
   public static final String OUTGOING_SESSION_HEADER = "X-V2C-CSRF";
   
+  /**
+   * Denotes the header in which the user's ID will be contained, if the user is authenticated.
+   */
+  public static final String OUTGOING_USER_HEADER = "X-V2C-User";
+  
   private Algorithm algorithm = null;
   private Map<String, AuthToken> sessionKeys = null;
   
