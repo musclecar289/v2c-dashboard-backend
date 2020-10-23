@@ -102,7 +102,9 @@ public class APIDriver implements Runnable {
             + "X-Requested-With, "
             + AuthTokenManager.INCOMING_SESSION_HEADER);
       res.header("Access-Control-Expose-Headers",
-          String.format("Content-Type, Content-Length, %1$s", AuthTokenManager.OUTGOING_SESSION_HEADER));
+          String.format("Content-Type, Content-Length, %1$s, %2$s",
+              AuthTokenManager.OUTGOING_SESSION_HEADER,
+              AuthTokenManager.OUTGOING_USER_HEADER));
       res.header("Content-Type", "application/json"); 
     });
     

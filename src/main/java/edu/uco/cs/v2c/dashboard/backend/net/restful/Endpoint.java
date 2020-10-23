@@ -21,6 +21,7 @@ import edu.uco.cs.v2c.dashboard.backend.V2CDashboardBackend;
 import edu.uco.cs.v2c.dashboard.backend.log.Logger;
 import edu.uco.cs.v2c.dashboard.backend.net.APIVersion;
 import edu.uco.cs.v2c.dashboard.backend.net.auth.AuthToken;
+import edu.uco.cs.v2c.dashboard.backend.net.auth.AuthTokenManager;
 import spark.Request;
 import spark.Response;
 
@@ -117,7 +118,7 @@ public abstract class Endpoint {
           request.pathInfo()));
       
       AuthToken authToken = V2CDashboardBackend.getAuthTokenManager().authorize(request);
-      if(authToken.getUser() != null) response.header("X-V2C-USER", authToken.getUser().getID().toString());
+      if(authToken.getUser() != null) response.header(AuthTokenManager.OUTGOING_USER_HEADER, authToken.getUser().getID().toString());
       
       return doEndpointTask(request, response, authToken).toString(2) + '\n';
     } catch(EndpointException e) {
