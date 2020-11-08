@@ -55,6 +55,9 @@ public class ModifyUserEndpoint extends Endpoint {
       user = uid == null ? null : V2CDashboardBackend.getDatabase().getUserProfileByID(uid);
       if(user == null) throw new EndpointException(req, "User not found.", 404);
       
+      if(!authToken.getUser().getID().equals(uid))
+        throw new EndpointException(req, "Access denied.", 403);
+      
       JSONObject request = new JSONObject(req.body());
       String email = request.has("email") ? request.getString("email") : user.getEmail();
       String username = request.has("username") ? request.getString("username") : user.getUsername();
