@@ -76,7 +76,7 @@ public class ModifyUserEndpoint extends Endpoint {
       
       V2CDashboardBackend.getDatabase().setUserProfile(user);
       
-      res.status(200);
+      res.status(202);
       return new JSONObject()
           .put("status", "ok")
           .put("info", "User updated.");
